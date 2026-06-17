@@ -83,9 +83,48 @@ function goBack() {
     <h1 class="page-title">Booking</h1>
     <p class="page-subtitle">Pilih barber, layanan, dan jadwal Anda</p>
 
-    <div class="steps">
-      <div v-for="s in 3" :key="s" class="step" :class="{ active: step >= s, current: step === s }">
-        {{ s }}
+    <div class="stepper">
+      <div class="stepper-track">
+        <!-- Step 1 -->
+        <div class="stepper-item" :class="{ active: step >= 1, current: step === 1 }">
+          <div class="stepper-circle">
+            <AppIcon v-if="step > 1" icon="mdi:check" :size="16" />
+            <span v-else>1</span>
+          </div>
+          <div class="stepper-label">
+            <span class="stepper-title">Barber</span>
+            <span class="stepper-desc">Pilih barber favorit</span>
+          </div>
+        </div>
+
+        <!-- Line 1-2 -->
+        <div class="stepper-line" :class="{ active: step >= 2 }"></div>
+
+        <!-- Step 2 -->
+        <div class="stepper-item" :class="{ active: step >= 2, current: step === 2 }">
+          <div class="stepper-circle">
+            <AppIcon v-if="step > 2" icon="mdi:check" :size="16" />
+            <span v-else>2</span>
+          </div>
+          <div class="stepper-label">
+            <span class="stepper-title">Layanan</span>
+            <span class="stepper-desc">Pilih jenis potong</span>
+          </div>
+        </div>
+
+        <!-- Line 2-3 -->
+        <div class="stepper-line" :class="{ active: step >= 3 }"></div>
+
+        <!-- Step 3 -->
+        <div class="stepper-item" :class="{ active: step >= 3, current: step === 3 }">
+          <div class="stepper-circle">
+            <span>3</span>
+          </div>
+          <div class="stepper-label">
+            <span class="stepper-title">Jadwal</span>
+            <span class="stepper-desc">Tentukan waktu</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -206,15 +245,28 @@ function goBack() {
 </template>
 
 <style scoped>
-.steps {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+.stepper {
+  margin-bottom: 2rem;
+  padding: 0 0.25rem;
 }
 
-.step {
-  width: 32px;
-  height: 32px;
+.stepper-track {
+  display: flex;
+  align-items: flex-start;
+}
+
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.stepper-circle {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -223,15 +275,79 @@ function goBack() {
   font-size: 0.85rem;
   background: var(--border);
   color: var(--text-muted);
+  border: 2.5px solid var(--border);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
-.step.active {
+.stepper-item.active .stepper-circle {
   background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
 }
 
-.step.current {
-  box-shadow: 0 0 0 3px rgba(86, 1, 26, 0.2);
+.stepper-item.current .stepper-circle {
+  box-shadow: 0 0 0 4px rgba(86, 1, 26, 0.15);
+  transform: scale(1.08);
+}
+
+.stepper-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.5rem;
+  text-align: center;
+  min-width: 80px;
+}
+
+.stepper-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.stepper-item.active .stepper-title {
+  color: var(--primary);
+}
+
+.stepper-desc {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+
+.stepper-item.current .stepper-desc {
+  opacity: 1;
+}
+
+.stepper-line {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  margin-top: 17px; /* vertically center with the 36px circle */
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.35s ease;
+}
+
+.stepper-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px;
+}
+
+.stepper-line.active::after {
+  transform: scaleX(1);
 }
 
 .back-link {

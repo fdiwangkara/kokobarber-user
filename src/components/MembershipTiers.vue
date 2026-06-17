@@ -83,10 +83,11 @@ const stepperProgress = computed(() => {
 
     <!-- Stepper progress keseluruhan -->
     <div class="tier-stepper card">
-      <div class="stepper-track">
-        <div class="stepper-fill" :style="{ width: `${stepperProgress}%` }" />
-      </div>
       <div class="stepper-nodes">
+        <div class="stepper-track-wrapper">
+          <div class="stepper-track-bg"></div>
+          <div class="stepper-track-fill" :style="{ width: `${stepperProgress}%` }" />
+        </div>
         <div
           v-for="(tier, index) in MEMBERSHIP_TIERS"
           :key="tier.id"
@@ -114,7 +115,6 @@ const stepperProgress = computed(() => {
           <span class="node-label" :style="isActive(tier) ? { color: tier.color, fontWeight: 700 } : {}">
             {{ tier.name }}
           </span>
-          <span v-if="index < MEMBERSHIP_TIERS.length - 1" class="node-connector" />
         </div>
       </div>
     </div>
@@ -235,26 +235,38 @@ const stepperProgress = computed(() => {
   overflow: hidden;
 }
 
-.stepper-track {
+.stepper-nodes {
+  display: flex;
+  justify-content: space-between;
   position: relative;
-  height: 4px;
-  background: var(--border);
-  border-radius: 999px;
-  margin: 0 1.25rem 1.75rem;
+  padding: 0 0.25rem;
 }
 
-.stepper-fill {
+.stepper-track-wrapper {
+  position: absolute;
+  top: 16px; /* center of 32px circle */
+  left: calc(12.5% + 0px); /* center of first node */
+  right: calc(12.5% + 0px); /* center of last node */
+  height: 4px;
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.stepper-track-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.stepper-track-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
   height: 100%;
   background: linear-gradient(90deg, var(--primary), var(--accent));
   border-radius: 999px;
   transition: width 0.4s ease;
-}
-
-.stepper-nodes {
-  display: flex;
-  justify-content: space-between;
-  margin-top: -2.35rem;
-  padding: 0 0.25rem;
 }
 
 .stepper-node {
@@ -264,6 +276,7 @@ const stepperProgress = computed(() => {
   flex: 1;
   position: relative;
   min-width: 0;
+  z-index: 1;
 }
 
 .node-circle {
@@ -275,7 +288,6 @@ const stepperProgress = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
   transition: all 0.2s;
 }
 
